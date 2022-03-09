@@ -1,0 +1,13 @@
+programme test1 {
+    entier k ;
+    pour k dans 1 .. 10 repeter {
+        ecrire k ;
+    }
+    ecrire
+    x
+    *
+    5
+    +
+    2
+    ;
+}

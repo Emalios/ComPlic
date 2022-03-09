@@ -1,0 +1,9 @@
+programme test {
+    entier k ;
+    pour k dans 1 .. 1 > 5 repeter {
+        ecrire k ;
+    }
+}
+
+// <==>
+

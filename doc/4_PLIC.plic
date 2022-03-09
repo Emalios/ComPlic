@@ -1,0 +1,5 @@
+programme test1 {
+    entier k ;
+    k := 5 ;
+    ecrire k > k = 5 ;
+}

@@ -1,0 +1,6 @@
+programme test_premier {
+    entier k ;
+    k := 5 ;
+    //on affiche k au carré
+    ecrire k * k ;
+}

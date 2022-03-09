@@ -1,0 +1,9 @@
+programme essai {
+    entier k ; entier l ; entier i ; entier j ;
+    i := 57 ;
+}
+
+<==>
+
+
+

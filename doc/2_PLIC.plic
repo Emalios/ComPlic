@@ -1,0 +1,1 @@
+programme test2 { entier k ; k := 5 ; si (x = 5) alors { ecrire k ; } sinon { ecrire k * k ; } }
