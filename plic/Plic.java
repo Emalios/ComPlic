@@ -11,6 +11,7 @@ public class Plic {
         AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(file);
         try {
             analyseurSyntaxique.analyse();
+            System.out.println("Tout s'est bien passé");
         } catch (ExceptionSyntaxique exceptionSyntaxique) {
             exceptionSyntaxique.printStackTrace();
         }
