@@ -25,7 +25,7 @@ public class AnalyseurLexical {
             }
         }
         //Si on ne trouve plus rien, alors c'est la fin du fichier
-        if(!trouve) lexicalUnit = "\n";
+        if(!trouve) lexicalUnit = Constante.EOF;
         //fin de fichier
         return lexicalUnit;
     }

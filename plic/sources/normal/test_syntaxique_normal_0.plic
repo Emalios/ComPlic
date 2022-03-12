@@ -1,4 +1,4 @@
-//début du programme
+// début du programme
 programme plic {
     entier k ; entier j ;
     k := 2 ;

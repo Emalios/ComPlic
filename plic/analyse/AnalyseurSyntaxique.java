@@ -28,20 +28,19 @@ public class AnalyseurSyntaxique {
         //on test si le programme n'est pas vide
         analyseTerminal(Constante.PROGRAMME);
         //On teste si le courant est un identifieur
-        if(!this.estIdf()) throw new UniteLexicaleAttendu(Constante.PROGRAMME + "Identifieur", Constante.IDF);
+        if(!this.estIdf()) throw new UniteLexicaleAttendu(Constante.PROGRAMME, "Identifieur", Constante.IDF);
         //On passe à l'unité lexicale suivante
         this.courante = this.analyseurLexical.next();
         //On est maintenant sur qu'on a un programme, on va maintenant analyser le bloc principal
         analyseBloc();
     }
 
-    private void analyseTerminal(String terminal) throws UniteLexicaleAttendu {
+    private void analyseTerminal(String terminalAttendu) throws UniteLexicaleAttendu {
         //on test si le programme n'est pas vide
-        if(courante.equals(Constante.EOF)) throw new ProgrammeVide(terminal);
-        //on test qu'on a bien un programme
-        if(!courante.equals(terminal)) {
-            System.out.println(terminal);
-            throw new UniteLexicaleAttendu(terminal, this.courante);
+        if(courante.equals(Constante.EOF)) throw new ProgrammeVide(terminalAttendu);
+        //on test qu'on a bien un terminal
+        if(!courante.equals(terminalAttendu)) {
+            throw new UniteLexicaleAttendu(this.courante, terminalAttendu);
         }
         //on passe à la suivante
         this.courante = this.analyseurLexical.next();
