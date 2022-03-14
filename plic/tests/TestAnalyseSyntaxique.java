@@ -1,16 +1,13 @@
 package tests;
 
-import analyse.AnalyseurLexical;
 import analyse.AnalyseurSyntaxique;
 import exceptions.ExceptionSyntaxique;
 import exceptions.ProgrammeVide;
 import exceptions.UniteLexicaleAttendu;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
 
 public class TestAnalyseSyntaxique {
 
@@ -28,7 +25,7 @@ public class TestAnalyseSyntaxique {
 
     @Test(expected = ProgrammeVide.class)
     public void testMoyaiVide() throws FileNotFoundException, ExceptionSyntaxique {
-        File fileName = new File("plic/sources/error/test_syntaxique_erreur_0.plic");
+        File fileName = new File("plic/sources/error/P0test_syntaxique_erreur_pas_programme.plic");
         System.out.println("Test de " + fileName + "...");
         AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
         analyseurSyntaxique.analyse();
@@ -38,9 +35,10 @@ public class TestAnalyseSyntaxique {
     @Test
     public void testMoyaiUniteAttendu() throws FileNotFoundException, ExceptionSyntaxique {
         boolean testOK = true;
-        int[] files = new int[]{1, 2, 3, 4};
-        for (Integer file : files) {
-            File fileName = new File("plic/sources/error/test_syntaxique_erreur_" + file + ".plic");
+        int[] filesNum = new int[]{1, 2, 3};
+        File[] files = new File("plic/sources/error/").listFiles();
+        for (Integer file : filesNum) {
+            File fileName = files[file];
             System.out.println("Test de " + fileName + "...");
             AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
             try {

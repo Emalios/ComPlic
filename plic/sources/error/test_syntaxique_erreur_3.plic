@@ -1,8 +1,0 @@
-// début du programme
-// erreur pas de ';' après une instruction
-programme plic {
-    entier k
-    k := 2 ;
-    j := k ;
-    ecrire k ;
-}

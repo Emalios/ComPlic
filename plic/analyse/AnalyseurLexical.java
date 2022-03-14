@@ -17,11 +17,12 @@ public class AnalyseurLexical {
         String lexicalUnit = "";
         while (scanner.hasNext() && !trouve) {
             lexicalUnit = scanner.next();
-            switch (lexicalUnit) {
-                //on fait un nextLine pour supprimer le commentaire
-                case "//": scanner.nextLine(); break;
+            //on fait un nextLine pour supprimer le commentaire
+            if (lexicalUnit.startsWith("//")) {
+                scanner.nextLine();
                 //on affiche
-                default: trouve = true;
+            } else {
+                trouve = true;
             }
         }
         //Si on ne trouve plus rien, alors c'est la fin du fichier

@@ -1,17 +1,22 @@
 package analyse;
 
-import exceptions.ExceptionSyntaxique;
-import exceptions.ProgrammeVide;
-import exceptions.UniteInconnu;
-import exceptions.UniteLexicaleAttendu;
+import exceptions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 public class AnalyseurSyntaxique {
 
+    private static final List<String> KEYWORDS = List.of(
+            "entier",
+            "programme",
+            "ecrire"
+    );
+
     private final AnalyseurLexical analyseurLexical;
     private String courante;
+    private String ancienne;
 
     public AnalyseurSyntaxique(File file) throws FileNotFoundException {
         this.analyseurLexical = new AnalyseurLexical(file);
@@ -28,8 +33,9 @@ public class AnalyseurSyntaxique {
         //on test si le programme n'est pas vide
         analyseTerminal(Constante.PROGRAMME);
         //On teste si le courant est un identifieur
-        if(!this.estIdf()) throw new UniteLexicaleAttendu(Constante.PROGRAMME, "Identifieur", Constante.IDF);
+        if(!this.estIdf()) throw new UniteLexicaleAttendu(Constante.PROGRAMME, this.courante, "Identifieur", Constante.IDF_REGEX);
         //On passe à l'unité lexicale suivante
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         //On est maintenant sur qu'on a un programme, on va maintenant analyser le bloc principal
         analyseBloc();
@@ -40,15 +46,20 @@ public class AnalyseurSyntaxique {
         if(courante.equals(Constante.EOF)) throw new ProgrammeVide(terminalAttendu);
         //on test qu'on a bien un terminal
         if(!courante.equals(terminalAttendu)) {
-            throw new UniteLexicaleAttendu(this.courante, terminalAttendu);
+            throw new UniteLexicaleAttendu(this.ancienne, this.courante, terminalAttendu, "");
         }
         //on passe à la suivante
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
     }
 
     private void analyseBloc() throws ExceptionSyntaxique {
         //on test que l'on commence bien avec une accolade ouvrante
         analyseTerminal(Constante.DEBUT_BLOC);
+        //on boucle sur toutes les déclarations
+        while (this.courante.equals(Constante.ENTIER)) {
+            this.analyserDeclaration();
+        }
         //on boucle sur les itérations afin de les analyser  (tant que l'on arrive pas à '}')
         while (!this.courante.equals(Constante.FIN_BLOC)) {
             //on analyse l'instruction courante
@@ -56,6 +67,7 @@ public class AnalyseurSyntaxique {
         }
         //fin du bloc
         //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
     }
 
@@ -64,7 +76,8 @@ public class AnalyseurSyntaxique {
         if (this.courante.equals(Constante.ECRIRE)) {
             analyserEcrire();
         } else if (this.courante.equals(Constante.ENTIER)) {
-            analyserDeclaration();
+            //pas censé avoir de déclaration ici
+            throw new DeclarationMauvaisEndroit();
         } else if (this.estIdf()){
             analyserAffectation();
         } else {
@@ -77,6 +90,7 @@ public class AnalyseurSyntaxique {
 
     private void analyserEcrire() throws UniteLexicaleAttendu {
         //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         //on test si on a bien une expression
         this.analyserExpression();
@@ -84,19 +98,24 @@ public class AnalyseurSyntaxique {
 
     private void analyserDeclaration() throws UniteLexicaleAttendu {
         //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         //On vérifie que l'on a bien un identifieur
         if(this.estIdf()) {
             //on passe à la prochaine unité lexicale
+            this.ancienne = this.courante;
             this.courante = this.analyseurLexical.next();
         } else {
             //sinon on throw une erreur
-            throw new UniteLexicaleAttendu(Constante.ENTIER, "identifieur", Constante.IDF);
+            throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
         }
+        //on s'assure que la déclaration se termine bien par le séparateur
+        analyseTerminal(Constante.INSTR_SEPARATOR);
     }
 
     private void analyserAffectation() throws UniteLexicaleAttendu {
         //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         //On vérifie que l'on a bien un token d'affectation
         this.analyseTerminal(Constante.AFFECTATION);
@@ -108,6 +127,7 @@ public class AnalyseurSyntaxique {
         boolean estValide = this.estIdf() || this.estValeurEntiere();
         if(estValide) {
             //on passe à la prochaine unité lexicale
+            this.ancienne = this.courante;
             this.courante = this.analyseurLexical.next();
         } else {
             //sinon on throw une erreur
@@ -124,7 +144,9 @@ public class AnalyseurSyntaxique {
         }
     }
 
-    private boolean estIdf() {
+    private boolean estIdf() throws UniteLexicaleAttendu {
+        //TODO: améliorer cette erreur
+        if(KEYWORDS.contains(this.courante)) throw new UniteLexicaleAttendu(this.courante, "Identifieur");
         return this.courante.matches("[a-z|A-Z]+");
     }
 
