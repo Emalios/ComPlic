@@ -16,6 +16,7 @@ public class Plic {
     }
 
     public static void main(String[] args) throws ExceptionSyntaxique, ExceptionFichier {
+        if(args.length == 0) throw new ExceptionFichier("Veuillez préciser un chemin vers un fichier .plic");
         if(!(args[0].endsWith(".plic"))) throw new MauvaisSuffixe(args[0]);
         try {
             new Plic(args[0]);

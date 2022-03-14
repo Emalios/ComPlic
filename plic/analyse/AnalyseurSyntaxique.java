@@ -30,7 +30,7 @@ public class AnalyseurSyntaxique {
     }
 
     private void analyseProg() throws ExceptionSyntaxique {
-        //on test si le programme n'est pas vide
+        //on test qu'on a bien 'programme'
         analyseTerminal(Constante.PROGRAMME);
         //On teste si le courant est un identifieur
         if(!this.estIdf()) throw new UniteLexicaleAttendu(Constante.PROGRAMME, this.courante, "Identifieur", Constante.IDF_REGEX);
@@ -61,6 +61,8 @@ public class AnalyseurSyntaxique {
             this.analyserDeclaration();
         }
         //on boucle sur les itérations afin de les analyser  (tant que l'on arrive pas à '}')
+        //condition pour s'assurer qu'on a au moins une instruction avant la FIN_BLOC
+        if(this.courante.equals(Constante.FIN_BLOC)) throw new AucuneInstruction();
         while (!this.courante.equals(Constante.FIN_BLOC)) {
             //on analyse l'instruction courante
             this.analyserInstruction();

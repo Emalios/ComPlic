@@ -1,9 +1,7 @@
 package tests;
 
 import analyse.AnalyseurSyntaxique;
-import exceptions.ExceptionSyntaxique;
-import exceptions.ProgrammeVide;
-import exceptions.UniteLexicaleAttendu;
+import exceptions.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -32,10 +30,28 @@ public class TestAnalyseSyntaxique {
         System.out.println("Test OK.");
     }
 
+    @Test(expected = DeclarationMauvaisEndroit.class)
+    public void testMoyaiDeclaration() throws FileNotFoundException, ExceptionSyntaxique {
+        File fileName = new File("plic/sources/error/P0test_syntaxique_erreur_delcaration_instruction.plic");
+        System.out.println("Test de " + fileName + "...");
+        AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
+        analyseurSyntaxique.analyse();
+        System.out.println("Test OK.");
+    }
+
+    @Test(expected = AucuneInstruction.class)
+    public void testMoyaiAucuneInstruction() throws FileNotFoundException, ExceptionSyntaxique {
+        File fileName = new File("plic/sources/error/P0test_syntaxique_erreur_aucune_instruction.plic");
+        System.out.println("Test de " + fileName + "...");
+        AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
+        analyseurSyntaxique.analyse();
+        System.out.println("Test OK.");
+    }
+
     @Test
-    public void testMoyaiUniteAttendu() throws FileNotFoundException, ExceptionSyntaxique {
+    public void testMoyaiUniteAttendu() throws FileNotFoundException {
         boolean testOK = true;
-        int[] filesNum = new int[]{1, 2, 3};
+        int[] filesNum = new int[]{3, 4, 5};
         File[] files = new File("plic/sources/error/").listFiles();
         for (Integer file : filesNum) {
             File fileName = files[file];
@@ -44,7 +60,6 @@ public class TestAnalyseSyntaxique {
             try {
                 analyseurSyntaxique.analyse();
             } catch (UniteLexicaleAttendu e) {
-                System.out.println(e.getMessage());
                 System.out.println("Test OK.");
             } catch (Exception e) {
                 testOK = false;
