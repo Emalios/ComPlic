@@ -1,18 +1,18 @@
 import analyse.AnalyseurSyntaxique;
-import exceptions.ExceptionFichier;
-import exceptions.ExceptionSyntaxique;
-import exceptions.FichierInconnu;
-import exceptions.MauvaisSuffixe;
+import exceptions.*;
+import repint.Bloc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Plic {
 
-    public Plic(String arg) throws FileNotFoundException, ExceptionSyntaxique {
+    public Plic(String arg) throws FileNotFoundException, ExceptionSyntaxique, ExceptionSemantique {
         File file = new File(arg);
         AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(file);
-        analyseurSyntaxique.analyse();
+        Bloc bloc = analyseurSyntaxique.analyse();
+        bloc.verifier();
+        System.out.println(bloc.toMips());
     }
 
     public static void main(String[] args) throws ExceptionSyntaxique, ExceptionFichier {
@@ -21,7 +21,9 @@ public class Plic {
         try {
             new Plic(args[0]);
         } catch (FileNotFoundException e) {
-            throw new FichierInconnu(args[0]);
+            System.out.println(new FichierInconnu(args[0]).getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 

@@ -1,3 +1,5 @@
 programme plic {
   entier x ;
+  x := 2 ;
+  ecrire j ;
 }
