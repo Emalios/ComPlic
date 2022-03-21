@@ -26,7 +26,7 @@ public class TDS {
         //condition pour la première variable pour la définir à 0
         Symbole symbole = new Symbole(type, cptDepl);
         this.tds.put(entree, symbole);
-        cptDepl += deplacement;
+        cptDepl -= deplacement;
     }
 
     public boolean contient(String idf) {
@@ -38,11 +38,11 @@ public class TDS {
     }
 
     public String toMips() {
-        StringBuilder builder = new StringBuilder("//Allouement de l'espace mémoire nécessaire (déclaration)").append("\n");
-        builder.append("add $sp,$sp,-").append(this.cptDepl).append("\n");
+        StringBuilder builder = new StringBuilder("#Allouement de l'espace mémoire nécessaire (déclaration)").append("\n");
+        builder.append("add $sp,$sp,").append(this.cptDepl).append("\n");
         //on affiche les commentaires
         for (Entree entree : this.tds.keySet()) {
-            builder.append("//").append(entree).append(" stocké à -").append(this.tds.get(entree).getDeplacement()).append("\n");
+            builder.append("#").append(entree).append(" stocké à ").append(this.tds.get(entree).getDeplacement()).append("\n");
         }
         return builder.toString();
     }

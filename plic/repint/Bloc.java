@@ -43,11 +43,12 @@ public class Bloc {
         //insertion des déclarations
         builder.append(TDS.INSTANCE.toMips()).append("\n");
         //insertion des instructions
-        builder.append("Instructions:").append("\n");
+        builder.append("# Instructions:").append("\n");
         for (Instruction instruction : this.instructions) {
             builder.append(instruction.toMips()).append("\n");
         }
         //end
+        builder.append("# fin\n");
         builder.append("end: \n" +
                 "   li $v0,10\n" +
                 "   syscall ");

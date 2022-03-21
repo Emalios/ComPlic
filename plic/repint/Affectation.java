@@ -38,9 +38,9 @@ public class Affectation extends Instruction {
 
     @Override
     String toMips() {
-        String comm = "Affectation de " + this.idf + " a " + this.valeur;
+        String comm = "#Affectation de " + this.idf + " a " + this.valeur;
         String commande = this.valeur instanceof Idf ? "lw" : "li";
-        String mips = commande + " $v0," + this.valeur.toMips() + "\n" + "sw $v0,-" + TDS.INSTANCE.get(new Entree(this.idf.getIdf())).getDeplacement() + "($sp)";
+        String mips = commande + " $v0," + this.valeur.toMips() + "\n" + "sw $v0," + TDS.INSTANCE.get(new Entree(this.idf.getIdf())).getDeplacement() + "($sp)";
         return comm + "\n" + mips;
     }
 

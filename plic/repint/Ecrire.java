@@ -22,11 +22,15 @@ public class Ecrire extends Instruction {
 
     @Override
     String toMips() {
-        String comm = "Ecriture de " + this.expression;
+        String comm = "# Ecriture de " + this.expression;
         String mips = "li $v0, 1\n" +
                       "lw $a0, " + this.expression.toMips() + "\n" +
                       "syscall";
-        return comm + "\n" + mips;
+        String newLine = "#retour a la ligne\n" +
+                "li $v0, 4\n" +
+                "la $a0, newLine\n" +
+                "syscall";
+        return comm + "\n" + mips + "\n" + newLine;
     }
 
     @Override
