@@ -120,7 +120,7 @@ public class AnalyseurSyntaxique {
             throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
         }
         //on ajoute la déclaration dans la table des symboles
-        TDS.INSTANCE.ajouter(new Entree(idf), new Symbole(Constante.ENTIER, Constante.ENTIER_DEPLACEMENT));
+        TDS.INSTANCE.ajouter(new Entree(idf), Constante.ENTIER, Constante.ENTIER_DEPLACEMENT);
         //on s'assure que la déclaration se termine bien par le séparateur
         analyseTerminal(Constante.INSTR_SEPARATOR);
     }

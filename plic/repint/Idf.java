@@ -31,7 +31,7 @@ public class Idf extends Expression {
 
     @Override
     String toMips() {
-        return null;
+        return "-" + TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement() + "($sp)";
     }
 
     @Override

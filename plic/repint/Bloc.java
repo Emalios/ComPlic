@@ -34,5 +34,23 @@ public class Bloc {
 
     public String toMips() {
         StringBuilder builder = new StringBuilder();
+        //debut
+        builder.append(".data\n" +
+                "newLine : .ascii \"\\n\"\n" +
+                "\n" +
+                ".text\n" +
+                "main : \n");
+        //insertion des déclarations
+        builder.append(TDS.INSTANCE.toMips()).append("\n");
+        //insertion des instructions
+        builder.append("Instructions:").append("\n");
+        for (Instruction instruction : this.instructions) {
+            builder.append(instruction.toMips()).append("\n");
+        }
+        //end
+        builder.append("end: \n" +
+                "   li $v0,10\n" +
+                "   syscall ");
+        return builder.toString();
     }
 }

@@ -21,12 +21,12 @@ public class TDS {
         tds.clear();
     }
 
-    public void ajouter(Entree entree, Symbole symbole) throws DoubleDeclaration {
+    public void ajouter(Entree entree, String type, int deplacement) throws DoubleDeclaration {
         if(this.tds.containsKey(entree)) throw new DoubleDeclaration(entree.getIdf());
         //condition pour la première variable pour la définir à 0
-        if(this.tds.isEmpty()) cptDepl = 0;
-        else cptDepl += symbole.getDeplacement();
+        Symbole symbole = new Symbole(type, cptDepl);
         this.tds.put(entree, symbole);
+        cptDepl += deplacement;
     }
 
     public boolean contient(String idf) {
@@ -35,6 +35,16 @@ public class TDS {
 
     public Symbole get(Entree idf) {
         return this.tds.get(idf);
+    }
+
+    public String toMips() {
+        StringBuilder builder = new StringBuilder("//Allouement de l'espace mémoire nécessaire (déclaration)").append("\n");
+        builder.append("add $sp,$sp,-").append(this.cptDepl).append("\n");
+        //on affiche les commentaires
+        for (Entree entree : this.tds.keySet()) {
+            builder.append("//").append(entree).append(" stocké à -").append(this.tds.get(entree).getDeplacement()).append("\n");
+        }
+        return builder.toString();
     }
 
 }

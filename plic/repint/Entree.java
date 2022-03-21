@@ -24,4 +24,9 @@ public class Entree {
     public int hashCode() {
         return idf != null ? idf.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return this.idf;
+    }
 }
