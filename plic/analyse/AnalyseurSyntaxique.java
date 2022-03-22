@@ -2,9 +2,7 @@ package analyse;
 
 import exceptions.*;
 import repint.*;
-import repint.expression.Expression;
-import repint.expression.Idf;
-import repint.expression.Nombre;
+import repint.expression.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +13,8 @@ public class AnalyseurSyntaxique {
     private static final List<String> KEYWORDS = List.of(
             Constante.ENTIER,
             Constante.PROGRAMME,
-            Constante.ECRIRE
+            Constante.ECRIRE,
+            Constante.TABLEAU
     );
 
     private final AnalyseurLexical analyseurLexical;
@@ -118,17 +117,6 @@ public class AnalyseurSyntaxique {
         //on passe à la prochaine unité lexicale
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
-        //On vérifie que l'on a bien un identifieur
-        String idf = "";
-        if(this.estIdf()) {
-            //on passe à la prochaine unité lexicale
-            idf = this.courante;
-            this.ancienne = this.courante;
-            this.courante = this.analyseurLexical.next();
-        } else {
-            //sinon on throw une erreur
-            throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
-        }
         //si on a un tableau on s'assure qu'on a bien les paramètres nécessaires
         if(type.equals(Constante.TABLEAU)) {
             analyseTerminal(Constante.TABLEAU_OUVRE);
@@ -142,6 +130,17 @@ public class AnalyseurSyntaxique {
             this.courante = this.analyseurLexical.next();
             analyseTerminal(Constante.TABLEAU_FERME);
         }
+        //On vérifie que l'on a bien un identifieur
+        String idf = "";
+        if(this.estIdf()) {
+            //on passe à la prochaine unité lexicale
+            idf = this.courante;
+            this.ancienne = this.courante;
+            this.courante = this.analyseurLexical.next();
+        } else {
+            //sinon on throw une erreur
+            throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
+        }
         //on s'assure que la déclaration se termine bien par le séparateur
         analyseTerminal(Constante.INSTR_SEPARATOR);
         //on ajoute la déclaration dans la table des symboles
@@ -149,26 +148,42 @@ public class AnalyseurSyntaxique {
     }
 
     private Instruction analyserAffectation() throws UniteLexicaleAttendu {
-        String idf = this.courante;
-        //on passe à la prochaine unité lexicale
-        this.ancienne = this.courante;
-        this.courante = this.analyseurLexical.next();
+        Acces acces = analyserAcces();
         //On vérifie que l'on a bien un token d'affectation
         this.analyseTerminal(Constante.AFFECTATION);
         //On vérifie qu'on a bien une expression
-        return new Affectation(new Idf(idf), this.analyserExpression());
+        return new Affectation(acces, this.analyserExpression());
     }
 
     private Expression analyserExpression() throws UniteLexicaleAttendu {
         Expression expression = null;
-        if(this.estIdf()) expression = new Idf(this.courante);
-        if(this.estValeurEntiere()) expression = new Nombre(Integer.parseInt(this.courante));
-        //sinon on throw une erreur
-        if(expression == null) throw new UniteLexicaleAttendu("expression", Constante.EXPRESSION);
-        //on passe au suivant
+        if(this.estValeurEntiere()) {
+            expression = new Nombre(Integer.parseInt(this.courante));
+            //on passe au suivant
+            this.ancienne = this.courante;
+            this.courante = this.analyseurLexical.next();
+        }
+        else expression = analyserAcces();
+        return expression;
+    }
+
+    private Acces analyserAcces() throws UniteLexicaleAttendu {
+        //on vérifie qu'on a un identifieur
+        if(!this.estIdf()) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
+        Idf idf = new Idf(this.courante);
+        //on passe à la suite
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
-        return expression;
+        //si on a pas '[' on retourne idf
+        if(!this.courante.equals(Constante.TABLEAU_OUVRE)) return idf;
+        //si on a un ';' on s'arrête, mais il peut aussi avoir un '[' pour un accès tableau
+        if(this.courante.equals(Constante.INSTR_SEPARATOR)) return idf;
+        //on doit avoir [ <expr> ]
+        analyseTerminal(Constante.TABLEAU_OUVRE);
+        Expression expression = analyserExpression();
+        //on doit avoir ']'
+        analyseTerminal(Constante.TABLEAU_FERME);
+        return new Tableau(idf, expression);
     }
 
     private boolean estValeurEntiere() {
@@ -182,7 +197,7 @@ public class AnalyseurSyntaxique {
 
     private boolean estIdf() throws UniteLexicaleAttendu {
         //TODO: améliorer cette erreur
-        if(KEYWORDS.contains(this.courante)) throw new UniteLexicaleAttendu(this.courante, "Identifieur");
+        if(KEYWORDS.contains(this.courante)) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
         return this.courante.matches("[a-z|A-Z]+");
     }
 

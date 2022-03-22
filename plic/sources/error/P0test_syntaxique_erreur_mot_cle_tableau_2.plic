@@ -1,4 +1,5 @@
 programme test {
     entier tableau ;
+    ecrire tableau ;
     tableau := 6 ;
 }

@@ -14,10 +14,6 @@ public class Idf extends Acces {
         this.idf = idf;
     }
 
-    public String getIdf() {
-        return idf;
-    }
-
     @Override
     public void verifier() throws ExceptionSemantique {
         //on test que la variable est dans la table des symboles
@@ -40,5 +36,10 @@ public class Idf extends Acces {
     @Override
     public String toString() {
         return this.idf;
+    }
+
+    @Override
+    public Idf getIdf() {
+        return new Idf(this.idf);
     }
 }

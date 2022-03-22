@@ -68,15 +68,69 @@ public class TestAnalyseSyntaxique {
     @Test
     public void testMoyaiUniteAttendu() throws FileNotFoundException {
         boolean testOK = true;
-        int[] filesNum = new int[]{3, 5, 6};
-        File[] files = new File("plic/sources/error/").listFiles();
-        for (Integer file : filesNum) {
-            File fileName = files[file];
+        String files[] = new String[]{"P0test_syntaxique_erreur_deux_idf.plic", "P0test_syntaxique_erreur_idf_incorrect.plic",
+        "P0test_syntaxique_erreur_manque_espace.plic", "P1test_syntaxique_manque_nombre_erreur_tableau_declaration_1.plic", "P1test_syntaxique_var_a_la_place_nombre_erreur_tableau_declaration_2.plic",
+                "P1test_syntaxique_manque_crochet_fermant_erreur_tableau_declaration_1.plic", "P1test_syntaxique_manque_crochet_ouvrant_erreur_tableau_declaration_1.plic",
+                "P1test_syntaxique_manque_idf_erreur_tableau_declaration_1.plic"
+        };
+        String path = "plic/sources/error/";
+        for (String pathF : files) {
+            File fileName = new File(path + pathF);
             System.out.println("Test de " + fileName + "...");
             AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
             try {
                 analyseurSyntaxique.analyse();
+                testOK = false;
             } catch (UniteLexicaleAttendu e) {
+                TDS.INSTANCE.clear();
+                System.out.println("Test OK.");
+            } catch (Exception e) {
+                testOK = false;
+                e.printStackTrace();
+            }
+        }
+        assert testOK;
+    }
+
+    @Test
+    public void testMoyaiSemantique() throws FileNotFoundException {
+        boolean testOK = true;
+        String files[] = new String[]{"P1test_semantique_-1_erreur_tableau_affectation_1.plic", "P1test_semantique_debordement_erreur_tableau_affectation_2.plic"
+
+        };
+        String path = "plic/sources/error/";
+        for (String pathF : files) {
+            File fileName = new File(path + pathF);
+            System.out.println("Test de " + fileName + "...");
+            AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
+            try {
+                analyseurSyntaxique.analyse().verifier();
+                testOK = false;
+            } catch (ExceptionSemantique e) {
+                TDS.INSTANCE.clear();
+                System.out.println("Test OK.");
+            } catch (Exception e) {
+                testOK = false;
+                e.printStackTrace();
+            }
+        }
+        assert testOK;
+    }
+
+    @Test
+    public void testMoyaiVariableInconnue() throws FileNotFoundException {
+        boolean testOK = true;
+        String files[] = new String[]{"P1test_semantique_var_inconnue_erreur_tableau_affectation_3.plic"
+        };
+        String path = "plic/sources/error/";
+        for (String pathF : files) {
+            File fileName = new File(path + pathF);
+            System.out.println("Test de " + fileName + "...");
+            AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(fileName);
+            try {
+                analyseurSyntaxique.analyse().verifier();
+                testOK = false;
+            } catch (VariableInconnue e) {
                 TDS.INSTANCE.clear();
                 System.out.println("Test OK.");
             } catch (Exception e) {
