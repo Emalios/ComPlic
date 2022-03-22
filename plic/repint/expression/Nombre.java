@@ -1,4 +1,4 @@
-package repint;
+package repint.expression;
 
 import exceptions.ExceptionSemantique;
 
@@ -15,17 +15,17 @@ public class Nombre extends Expression {
     }
 
     @Override
-    void verifier() throws ExceptionSemantique {
+    public void verifier() throws ExceptionSemantique {
         //on ne fait rien c'est correct
     }
 
     @Override
-    String getType() throws ExceptionSemantique {
+    public String getType() throws ExceptionSemantique {
         return "entier";
     }
 
     @Override
-    String toMips() {
+    public String toMips() {
         return String.valueOf(this.valeur);
     }
 

@@ -1,7 +1,6 @@
 package exceptions;
 
-import repint.Expression;
-import repint.Idf;
+import repint.expression.Expression;
 
 public class MauvaisType extends ExceptionSemantique {
 

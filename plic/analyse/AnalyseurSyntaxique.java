@@ -2,6 +2,9 @@ package analyse;
 
 import exceptions.*;
 import repint.*;
+import repint.expression.Expression;
+import repint.expression.Idf;
+import repint.expression.Nombre;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,7 +63,7 @@ public class AnalyseurSyntaxique {
         //on test que l'on commence bien avec une accolade ouvrante
         analyseTerminal(Constante.DEBUT_BLOC);
         //on boucle sur toutes les déclarations
-        while (this.courante.equals(Constante.ENTIER)) {
+        while (estDeclaration(this.courante)) {
             this.analyserDeclaration();
         }
         //on boucle sur les itérations afin de les analyser  (tant que l'on arrive pas à '}')
@@ -75,6 +78,10 @@ public class AnalyseurSyntaxique {
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         return bloc;
+    }
+
+    private boolean estDeclaration(String courante) {
+        return courante.equals(Constante.ENTIER) || courante.equals(Constante.TABLEAU);
     }
 
     private Instruction analyserInstruction() throws ExceptionSyntaxique {
@@ -105,6 +112,9 @@ public class AnalyseurSyntaxique {
     }
 
     private void analyserDeclaration() throws UniteLexicaleAttendu, ExceptionSemantique {
+        //on stocke le type, on est sur que c'est soit Constante.ENTIER ou Constante.TABLEAU
+        String type = this.courante;
+        int deplacement = Constante.ENTIER_DEPLACEMENT;
         //on passe à la prochaine unité lexicale
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
@@ -119,10 +129,23 @@ public class AnalyseurSyntaxique {
             //sinon on throw une erreur
             throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
         }
+        //si on a un tableau on s'assure qu'on a bien les paramètres nécessaires
+        if(type.equals(Constante.TABLEAU)) {
+            analyseTerminal(Constante.TABLEAU_OUVRE);
+            //on s'assure qu'on a bien un entier
+            if(!estValeurEntiere()) throw new UniteLexicaleAttendu(this.ancienne, this.courante, Constante.ENTIER, Constante.ENTIER);
+            int val = Integer.parseInt(this.courante);
+            //on s'assure qu'il est sup à 0
+            if(val <= 0) throw new UniteLexicaleAttendu(this.ancienne, this.courante, Constante.ENTIER + " > 0", Constante.ENTIER);
+            deplacement = deplacement * val;
+            this.ancienne = this.courante;
+            this.courante = this.analyseurLexical.next();
+            analyseTerminal(Constante.TABLEAU_FERME);
+        }
         //on s'assure que la déclaration se termine bien par le séparateur
         analyseTerminal(Constante.INSTR_SEPARATOR);
         //on ajoute la déclaration dans la table des symboles
-        TDS.INSTANCE.ajouter(new Entree(idf), Constante.ENTIER, Constante.ENTIER_DEPLACEMENT);
+        TDS.INSTANCE.ajouter(new Entree(idf), type, deplacement);
     }
 
     private Instruction analyserAffectation() throws UniteLexicaleAttendu {

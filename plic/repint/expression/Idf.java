@@ -1,9 +1,12 @@
-package repint;
+package repint.expression;
 
 import exceptions.ExceptionSemantique;
 import exceptions.VariableInconnue;
+import repint.Entree;
+import repint.TDS;
+import repint.expression.Acces;
 
-public class Idf extends Expression {
+public class Idf extends Acces {
 
     private String idf;
 
@@ -16,13 +19,13 @@ public class Idf extends Expression {
     }
 
     @Override
-    void verifier() throws ExceptionSemantique {
+    public void verifier() throws ExceptionSemantique {
         //on test que la variable est dans la table des symboles
         if(!TDS.INSTANCE.contient(this.idf)) throw new VariableInconnue(this.idf);
     }
 
     @Override
-    String getType() throws ExceptionSemantique {
+    public String getType() throws ExceptionSemantique {
         //on vérifie que ça existe
         verifier();
         //on récupère le type contenu dans la TDS
@@ -30,7 +33,7 @@ public class Idf extends Expression {
     }
 
     @Override
-    String toMips() {
+    public String toMips() {
         return TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement() + "($sp)";
     }
 

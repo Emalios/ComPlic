@@ -2,6 +2,8 @@ package repint;
 
 import exceptions.ExceptionSemantique;
 import exceptions.MauvaisType;
+import repint.expression.Expression;
+import repint.expression.Idf;
 
 import java.util.HashMap;
 import java.util.Map;

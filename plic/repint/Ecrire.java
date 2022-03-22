@@ -1,6 +1,7 @@
 package repint;
 
 import exceptions.ExceptionSemantique;
+import repint.expression.Expression;
 
 public class Ecrire extends Instruction {
 

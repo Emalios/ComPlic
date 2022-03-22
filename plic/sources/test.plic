@@ -1,5 +1,4 @@
 programme plic {
-  entier x ;
-  x := 1 ;
-  ecrire x ;
+    entier k ; tableau t [ 5 ] ;
+    ecrire k ;
 }
