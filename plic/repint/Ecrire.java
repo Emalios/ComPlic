@@ -24,7 +24,7 @@ public class Ecrire extends Instruction {
     @Override
     String toMips() {
         String builder = "# Calcule de l'expression à afficher\n" +
-                "lw $v0," + this.expression.toMips() + "\n" +
+                this.expression.toMips() + "\n" +
                 "# On écrit le résultat\n" +
                 "move $a0, $v0\n" +
                 "li $v0, 1\n" +

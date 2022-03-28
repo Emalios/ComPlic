@@ -37,6 +37,10 @@ public class TDS {
         return this.tds.get(idf);
     }
 
+    public int getCptDepl() {
+        return cptDepl;
+    }
+
     public String toMips() {
         StringBuilder builder = new StringBuilder("#Allouement de l'espace mémoire nécessaire (déclaration)").append("\n");
         builder.append("move $s7, $sp").append("\n");

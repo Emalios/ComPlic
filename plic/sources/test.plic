@@ -1,4 +1,6 @@
 programme plic {
-    entier i ; tableau [ 5 ] tab ; entier k ; tableau [ 1 ] truc ;
-    ecrire tab [ 1 ] ;
+    entier i ; tableau [ 5 ] tab ;
+    i := 2 ;
+    ecrire i ;
 }
+
