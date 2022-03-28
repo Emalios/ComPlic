@@ -26,7 +26,7 @@ public class Tableau extends Acces {
         val.verifier();
         //on test que idf est bien de type tableau
         Symbole symbole = TDS.INSTANCE.get(new Entree(this.idf.toString()));
-        if(!symbole.getType().equals(this.val.getType())) throw new MauvaisType(this.idf, symbole.getType(), this.val, this.val.getType());
+        if(!"entier".equals(this.val.getType())) throw new MauvaisType(this.idf, symbole.getType(), this.val, this.val.getType());
     }
 
     @Override

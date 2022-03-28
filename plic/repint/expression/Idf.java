@@ -30,7 +30,7 @@ public class Idf extends Acces {
 
     @Override
     public String toMips() {
-        return TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement() + "($sp)";
+        return TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement() + "($s7)";
     }
 
     @Override

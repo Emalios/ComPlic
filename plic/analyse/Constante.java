@@ -1,5 +1,7 @@
 package analyse;
 
+import java.util.Random;
+
 public class Constante {
 
     public static final int ENTIER_DEPLACEMENT = 4;

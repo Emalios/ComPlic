@@ -32,14 +32,12 @@ public class Affectation extends Instruction {
 
     @Override
     String toMips() {
-        /*
-        String comm = "#Affectation de " + this.acces + " a " + this.valeur;
-        String commande = this.valeur instanceof Idf ? "lw" : "li";
-        String mips = commande + " $v0," + this.valeur.toMips() + "\n" + "sw $v0," + TDS.INSTANCE.get(new Entree(this.idf.getIdf())).getDeplacement() + "($sp)";
-        return comm + "\n" + mips;
-
-         */
-        return "";
+        StringBuilder builder = new StringBuilder();
+        builder.append(" #Affectation de ").append(this.acces).append(" a ").append(this.valeur).append("\n");
+        builder.append(this.valeur instanceof Idf ? "lw" : "li");
+        builder.append(" $v0,").append(this.valeur.toMips()).append("\n");
+        builder.append("sw $v0,").append(TDS.INSTANCE.get(new Entree(this.acces.getIdf().toString())).getDeplacement()).append("($s7)");
+        return builder.toString();
     }
 
     @Override

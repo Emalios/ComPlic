@@ -12,7 +12,7 @@ public class Plic {
         AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(file);
         Bloc bloc = analyseurSyntaxique.analyse();
         bloc.verifier();
-        System.out.println(bloc);
+        System.out.println(bloc.toMips());
     }
 
     public static void main(String[] args) throws ExceptionSyntaxique, ExceptionFichier {

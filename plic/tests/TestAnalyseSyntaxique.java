@@ -4,6 +4,7 @@ import analyse.AnalyseurSyntaxique;
 import exceptions.*;
 import org.junit.After;
 import org.junit.Test;
+import repint.Bloc;
 import repint.TDS;
 
 import java.io.File;
@@ -23,7 +24,9 @@ public class TestAnalyseSyntaxique {
             String fileName = file.getName();
             System.out.println("Test de " + fileName + "...");
             AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(file);
-            analyseurSyntaxique.analyse();
+            Bloc bloc = analyseurSyntaxique.analyse();
+            bloc.verifier();
+            bloc.toMips();
             System.out.println("Test OK.");
             TDS.INSTANCE.clear();
         }

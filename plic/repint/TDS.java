@@ -39,6 +39,7 @@ public class TDS {
 
     public String toMips() {
         StringBuilder builder = new StringBuilder("#Allouement de l'espace mémoire nécessaire (déclaration)").append("\n");
+        builder.append("move $s7, $sp").append("\n");
         builder.append("add $sp,$sp,").append(this.cptDepl).append("\n");
         //on affiche les commentaires
         for (Entree entree : this.tds.keySet()) {
