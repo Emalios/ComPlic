@@ -3,6 +3,8 @@ package analyse;
 import exceptions.*;
 import repint.*;
 import repint.expression.*;
+import repint.expression.operande.ExpressionParen;
+import repint.expression.operande.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +17,21 @@ public class AnalyseurSyntaxique {
             Constante.PROGRAMME,
             Constante.ECRIRE,
             Constante.TABLEAU
+    );
+
+    public static final List<String> OPERATEURS = List.of(
+            Constante.PLUS,
+            Constante.MIN,
+            Constante.MUL,
+            ">",
+            "<",
+            ">=",
+            "<=",
+            "=",
+            "#",
+            "et",
+            "ou",
+            "non"
     );
 
     private final AnalyseurLexical analyseurLexical;
@@ -156,15 +173,74 @@ public class AnalyseurSyntaxique {
     }
 
     private Expression analyserExpression() throws UniteLexicaleAttendu {
-        Expression expression = null;
+        Expression left = analyserOperande();
+        //on test si on a un opérateur, si non on renvoie uniquement l'opérande left
+        if(!estOperateur(this.courante)) {
+            return left;
+        }
+        //si on a un opérateur on le récupère et on construit une expression binaire
+        String operateur = this.courante;
+        //on passe à la suite
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        Expression right = analyserOperande();
+        return new OperationBinaire(left, operateur, right);
+    }
+
+    private boolean estOperateur(String courante) {
+        return OPERATEURS.contains(courante);
+    }
+
+    private Expression analyserOperande() throws UniteLexicaleAttendu {
+        Expression operande = null;
+        //si c'est un entier
         if(this.estValeurEntiere()) {
-            expression = new Nombre(Integer.parseInt(this.courante));
-            //on passe au suivant
+            operande = new Nombre(Integer.parseInt(this.courante));
+            //on passe à la suite
             this.ancienne = this.courante;
             this.courante = this.analyseurLexical.next();
         }
-        else expression = analyserAcces();
-        return expression;
+        //si c'est un acces
+        else if(this.estIdf()) {
+            operande = analyserAcces();
+        }
+        //si c'est - ( EXPRESSION )
+        else if(this.courante.equals(Constante.MIN)) {
+            operande = analyserMinExpressionParen();
+        }
+        //si c'est non EXPRESSION
+        else if(this.courante.equals(Constante.NON)) {
+            operande = analyserNonExpression();
+        }
+        //sinon ça doit être ( EXPRESSION )
+        else {
+            operande = analyserExpressionParen();
+        }
+        return operande;
+    }
+
+    //parse - EXPRESSION
+    private Expression analyserExpressionParen() throws UniteLexicaleAttendu {
+        analyseTerminal(Constante.PAREN_OPEN);
+        Expression expression = analyserExpression();
+        analyseTerminal(Constante.PAREN_CLOSE);
+        return new ExpressionParen(expression);
+    }
+
+    //parse non EXPRESSION
+    private Expression analyserNonExpression() throws UniteLexicaleAttendu {
+        analyseTerminal(Constante.NON);
+        Expression expression = analyserExpression();
+        return new NonExpression(expression);
+    }
+
+    //parse - ( EXPRESSION )
+    private Expression analyserMinExpressionParen() throws UniteLexicaleAttendu {
+        analyseTerminal(Constante.MIN);
+        analyseTerminal(Constante.PAREN_OPEN);
+        Expression expression = analyserExpression();
+        analyseTerminal(Constante.PAREN_CLOSE);
+        return new MinExpressionParen(expression);
     }
 
     private Acces analyserAcces() throws UniteLexicaleAttendu {
@@ -197,7 +273,9 @@ public class AnalyseurSyntaxique {
 
     private boolean estIdf() throws UniteLexicaleAttendu {
         //TODO: améliorer cette erreur
-        if(KEYWORDS.contains(this.courante)) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
+        //if(KEYWORDS.contains(this.courante) || OPERATEURS.contains(this.courante)) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
+        if(KEYWORDS.contains(this.courante)) return false;
+        if(OPERATEURS.contains(this.courante)) return false;
         return this.courante.matches("[a-z|A-Z]+");
     }
 

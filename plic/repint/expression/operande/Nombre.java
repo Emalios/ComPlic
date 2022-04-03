@@ -1,6 +1,7 @@
-package repint.expression;
+package repint.expression.operande;
 
 import exceptions.ExceptionSemantique;
+import repint.expression.Expression;
 
 public class Nombre extends Expression {
 

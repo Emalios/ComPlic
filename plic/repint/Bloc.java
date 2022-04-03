@@ -36,7 +36,8 @@ public class Bloc {
         StringBuilder builder = new StringBuilder();
         //debut
         builder.append(".data\n" +
-                "newLine : .ascii \"\\n\"\n" +
+                "newLine : .asciiz \"\\n\"\n" +
+                "erreur_str: .asciiz \"ERREUR: \"\n" +
                 "\n" +
                 ".text\n" +
                 "main : \n");
@@ -52,6 +53,14 @@ public class Bloc {
         builder.append("end: \n" +
                 "   li $v0,10\n" +
                 "   syscall ");
+        builder.append("#Erreur\n" +
+                "erreur:\n" +
+                "    #On affiche l'erreur\n" +
+                "    li $v0, 4\n" +
+                "    la $a0, erreur_str\n" +
+                "    syscall\n" +
+                "\n" +
+                "    b end");
         return builder.toString();
     }
 }

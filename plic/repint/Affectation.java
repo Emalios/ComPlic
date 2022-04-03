@@ -55,17 +55,18 @@ public class Affectation extends Instruction {
         Code qui calcule la valeur de l’expression dans $v0
          */
         String com = "# Affectation de " + this.acces.toString() + " à " + this.valeur.toString() + "\n";
-        String codePourMettreDansV0 = this.valeur.toMips();
+        String codePourMettreDansV0 = "# code pour mettre " + this.valeur + " dans $v0\n" + this.valeur.toMips();
         //Code pour empiler $v0
-        String onEmpileV0 = "# on empile\nsw $v0, " + TDS.INSTANCE.getCptDepl() + "($sp)\nadd $sp,$sp,-4\n";
+        String onEmpileV0 = "# on empile\nadd $sp,$sp,-4\nsw $v0, " + TDS.INSTANCE.getCptDepl() + "($s7)\n";
         //Code qui calcule l’adresse de l’accès dans $a0
-        String adresseAcces = "# Code pour mettre valeur '" + this.acces + "' accès dans $a0\n" + this.acces.toMips() + "move $a0, $v0\n\n";
+        String adresseAcces = "# Code pour mettre valeur '" + this.acces + "' accès dans $a0\n" + this.acces.toMips() + "\n\n";
         //Dépiler dans $v0
         String depiler = "# on depile \n" +
-                "add $sp,$sp,4\n" +
-                "lw $v0, " + TDS.INSTANCE.getCptDepl() + "($sp)\n";
+                "lw $v0, " + TDS.INSTANCE.getCptDepl() + "($s7)\n" +
+                "add $sp,$sp,4\n";
+
         //Ranger $v0 à l’adresse contenue dans $a0
-        String ranger = "#on met $v0 à l'adresse contenu dans $a0\nmove $v0, $a0\n";
+        String ranger = "#on met $v0 à l'adresse contenu dans $a0\nsw $v0, 0($a0)\n";
         return com + codePourMettreDansV0 + onEmpileV0 + adresseAcces + depiler + ranger;
     }
 

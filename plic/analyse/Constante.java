@@ -8,6 +8,9 @@ public class Constante {
     public static final String TABLEAU = "tableau";
     public static final String TABLEAU_OUVRE = "[";
     public static final String TABLEAU_FERME = "]";
+    public static final String NON = "non";
+    public static final String PAREN_OPEN = "(";
+    public static final String PAREN_CLOSE = ")";
     public static String EOF = "\n";
     public static String FIN_PROGRAMME = "";
     public static String PROGRAMME = "programme";
@@ -20,5 +23,8 @@ public class Constante {
     public static String LIRE = "lire";
     public static String ENTIER = "entier";
     public static String AFFECTATION = ":=";
+    public static final String MIN = "-";
+    public static final String PLUS = "+";
+    public static final String MUL = "*";
 
 }

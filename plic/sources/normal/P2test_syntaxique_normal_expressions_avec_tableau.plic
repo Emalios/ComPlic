@@ -1,0 +1,15 @@
+programme plic {
+    entier k ; tableau [ 5 ] i ;
+    k := 1 + i [ 0 ] ;
+    k := 1 * i [ 0 ] ;
+    k := 1 - i [ 0 ] ;
+    k := ( 1 + 2 ) - i [ 0 ] ;
+    ecrire k > 2 ;
+    ecrire k < 2 ;
+    ecrire k >= 2 ;
+    ecrire i [ 0 ]  <= 2 ;
+    ecrire ( i [ 0 ]  > 2 ) et ( k > 1 ) ;
+    ecrire ( k < 2 ) ou ( k < 1 ) ;
+    ecrire k = i [ 0 ] ;
+    ecrire k # k ;
+}

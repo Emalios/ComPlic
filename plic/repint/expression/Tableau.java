@@ -41,12 +41,18 @@ public class Tableau extends Acces {
         //int = 4
         String exprMips = this.val.toMips();
         String calculMemoire ="" +
-                "# code pour mettre l'expression '" + this.toString() + "' dans $v0\n" +
-                "li $a0, 4\n" +
+                "# code pour mettre l'expression '" + this + "' dans $v0\n" +
+                "li $t1, -4\n" +
                  exprMips + "\n" +
-                "mult $a0, $v0\n" +
-                "mfhi $a0 # 32 most significant bits of multiplication to $a0\n"+
-                "addi $a0, $a0, " + -baseDeplacement + "\n"
+                "#On verifie que ça ne sort pas du tableau\n" +
+                "li $a0, 5\n" +
+                "bltz $v0 erreur\n" +
+                "bge $v0,$a0, erreur\n" +
+                "mult $t1, $v0\n" +
+                "mflo $v0 # On met le résultat dans $v0\n"+
+                "add $v0, $v0, " + -baseDeplacement + " # On calcule le déplacement\n" +
+                "add $a0, $v0, $s7\n" +
+                "lw $v0, 0($a0)\n"
                 ;
         return calculMemoire;
     }

@@ -98,7 +98,7 @@ public class TestAnalyseSyntaxique {
     @Test
     public void testMoyaiSemantique() throws FileNotFoundException {
         boolean testOK = true;
-        String files[] = new String[]{"P1test_semantique_-1_erreur_tableau_affectation_1.plic", "P1test_semantique_debordement_erreur_tableau_affectation_2.plic"
+        String files[] = new String[]{
 
         };
         String path = "plic/sources/error/";

@@ -16,14 +16,15 @@ public class Plic {
     }
 
     public static void main(String[] args) throws ExceptionSyntaxique, ExceptionFichier {
-        if(args.length == 0) throw new ExceptionFichier("Veuillez préciser un chemin vers un fichier .plic");
-        if(!(args[0].endsWith(".plic"))) throw new MauvaisSuffixe(args[0]);
         try {
+            if(args.length == 0) throw new ExceptionFichier("Veuillez préciser un chemin vers un fichier .plic");
+            if(!(args[0].endsWith(".plic"))) throw new MauvaisSuffixe(args[0]);
             new Plic(args[0]);
         } catch (FileNotFoundException e) {
             System.out.println(new FichierInconnu(args[0]).getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
