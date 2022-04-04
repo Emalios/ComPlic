@@ -1,5 +1,7 @@
 programme plic {
-    entier k ; tableau [ 5 ] i ;
-    i [ 1 + 2 ] := 4 + 5 ;
-    i [ ( 1 * 5 ) + 5 ] := 4 + 1 ;
+    entier j ; entier k ; tableau [ 7 ] t ;
+    j := 1 ;
+    k := j ;
+    t [ 8 ] := k ;
+    ecrire t [ 3 ] ;
 }

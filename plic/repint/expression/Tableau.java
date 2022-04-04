@@ -37,24 +37,36 @@ public class Tableau extends Acces {
     @Override
     public String toMips() {
         int baseDeplacement = TDS.INSTANCE.get(new Entree(this.idf.toString())).getDeplacement();
-        //t[1] avec cptl = -8
-        //int = 4
-        String exprMips = this.val.toMips();
-        String calculMemoire ="" +
-                "# code pour mettre l'expression '" + this + "' dans $v0\n" +
-                "li $t1, -4\n" +
-                 exprMips + "\n" +
-                "#On verifie que ça ne sort pas du tableau\n" +
-                "li $a0, 5\n" +
-                "bltz $v0 erreur\n" +
-                "bge $v0,$a0, erreur\n" +
-                "mult $t1, $v0\n" +
-                "mflo $v0 # On met le résultat dans $v0\n"+
-                "add $v0, $v0, " + -baseDeplacement + " # On calcule le déplacement\n" +
-                "add $a0, $v0, $s7\n" +
-                "lw $v0, 0($a0)\n"
-                ;
-        return calculMemoire;
+        StringBuilder builder = new StringBuilder();
+        ajouterCommentaire(builder, "On calcule l'emplacement mémoire de " + this.idf + " a l'emplacement " + this.val);
+        ajouterCommentaire(builder, "Donc on multiple " + this.val + " et - 4 et on ajoute ensuite l'emplacement mémoire de " + this.idf + " ici " + baseDeplacement);
+        ajouterLigne(builder, this.val.toMips());
+        ajouterCommentaire(builder, "Avant d'aller plus loin, on test le débordement");
+        ajouterCommentaire(builder, "On ajoute la taille du tableau");
+        ajouterLigne(builder, "li $t0, " + TDS.INSTANCE.get(new Entree(this.idf.toString())).getTaille());
+        ajouterCommentaire(builder, "On compare, si c'est >= alors on va dans erreur");
+        ajouterLigne(builder, "bge $v0, $t0, erreur");
+        ajouterLigne(builder, "li $t1, -4");
+        ajouterCommentaire(builder, "On fait la multiplication");
+        ajouterLigne(builder, "mult $v0, $t1");
+        ajouterCommentaire(builder, "On met le résultat dans $v0");
+        ajouterLigne(builder, "mflo $v0");
+        ajouterCommentaire(builder, "On fait l'addition avec l'emplacement mémoire de " + this.idf + ", ici " + baseDeplacement);
+        ajouterLigne(builder, "add $a0, $v0, " + baseDeplacement);
+        ajouterLigne(builder, "add $a0, $a0, $s7");
+        return builder.toString();
+    }
+
+    private void ajouterLigne(StringBuilder builder, String line) {
+        builder.append(line).append("\n");
+    }
+
+    private void ajouterCommentaire(StringBuilder builder, String string) {
+        ajouterLigne(builder.append("# "), string);
+    }
+
+    private int getTaille() {
+        return TDS.INSTANCE.get(new Entree(this.idf.toString())).getTaille();
     }
 
     @Override

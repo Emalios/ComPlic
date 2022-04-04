@@ -15,7 +15,8 @@ public class OperationBinaire extends Expression {
 
     @Override
     public void verifier() throws ExceptionSemantique {
-
+        left.verifier();
+        right.verifier();
     }
 
     @Override

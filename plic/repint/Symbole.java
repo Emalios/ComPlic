@@ -4,10 +4,16 @@ public class Symbole {
 
     private final String type;
     private int deplacement;
+    private int taille;
 
-    public Symbole(String type, int deplacement) {
+    public Symbole(String type, int deplacement, int taille) {
         this.type = type;
         this.deplacement = deplacement;
+        this.taille = taille;
+    }
+
+    public int getTaille() {
+        return taille;
     }
 
     public int getDeplacement() {

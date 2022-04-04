@@ -37,7 +37,7 @@ public class Bloc {
         //debut
         builder.append(".data\n" +
                 "newLine : .asciiz \"\\n\"\n" +
-                "erreur_str: .asciiz \"ERREUR: \"\n" +
+                "erreur_str: .asciiz \"Erreur: Débordement\"\n" +
                 "\n" +
                 ".text\n" +
                 "main : \n");

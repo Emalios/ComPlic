@@ -24,7 +24,7 @@ public class TDS {
     public void ajouter(Entree entree, String type, int deplacement) throws DoubleDeclaration {
         if(this.tds.containsKey(entree)) throw new DoubleDeclaration(entree.getIdf());
         //condition pour la première variable pour la définir à 0
-        Symbole symbole = new Symbole(type, cptDepl);
+        Symbole symbole = new Symbole(type, cptDepl, deplacement/4);
         this.tds.put(entree, symbole);
         cptDepl -= deplacement;
     }

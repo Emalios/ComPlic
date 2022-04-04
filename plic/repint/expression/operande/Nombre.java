@@ -1,6 +1,8 @@
 package repint.expression.operande;
 
 import exceptions.ExceptionSemantique;
+import repint.Entree;
+import repint.TDS;
 import repint.expression.Expression;
 
 public class Nombre extends Expression {
@@ -27,7 +29,7 @@ public class Nombre extends Expression {
 
     @Override
     public String toMips() {
-        return "li $v0, " + valeur + "\n";
+        return "li $v0, " + valeur +"\n";
     }
 
     @Override

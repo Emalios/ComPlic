@@ -30,7 +30,9 @@ public class Idf extends Acces {
 
     @Override
     public String toMips() {
-        return "lw $v0, " + TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement() + "($sp)\n";
+        int deplacement = TDS.INSTANCE.get(new Entree(this.idf)).getDeplacement();
+        String com = "# On met l'adresse de " + this.idf + " dans $a0\n";
+        return com + "subi $a0, $s7, " + (-deplacement) + "\n";
     }
 
     @Override
