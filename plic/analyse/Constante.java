@@ -11,6 +11,14 @@ public class Constante {
     public static final String NON = "non";
     public static final String PAREN_OPEN = "(";
     public static final String PAREN_CLOSE = ")";
+    public static final String SI = "si";
+    public static final String ALORS = "alors";
+    public static final String POUR = "pour";
+    public static final String TANTQUE = "tantque";
+    public static final String REPETER = "repeter";
+    public static final String DANS = "dans";
+    public static final String SINON = "sinon";
+    public static final String TO = "..";
     public static String EOF = "\n";
     public static String FIN_PROGRAMME = "";
     public static String PROGRAMME = "programme";

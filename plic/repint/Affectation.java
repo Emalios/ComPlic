@@ -5,6 +5,7 @@ import exceptions.MauvaisType;
 import repint.expression.Acces;
 import repint.expression.Expression;
 import repint.expression.Idf;
+import repint.expression.OperationBinaire;
 import repint.expression.operande.Nombre;
 
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class Affectation extends Instruction {
         //obligé de savoir si c'est un identifieur, on n'a aucun moyen de savoir quand récupérer soit la valeur soit l'adresse
         //supposons k := k ;
         //c'est impossible avec une seule méthode toMips et sans connaître le type des opérandes
-        if(this.valeur instanceof Nombre) {
+        if(this.valeur instanceof Nombre || this.valeur instanceof OperationBinaire) {
             //si c'est un nombre on récup juste la valeur dans $v0
             ajouterCommentaire(builder, "On calcule la valeur de " + this.valeur + " et on le met dans $v0");
             ajouterLigne(builder, this.valeur.toMips());

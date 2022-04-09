@@ -16,7 +16,16 @@ public class AnalyseurSyntaxique {
             Constante.ENTIER,
             Constante.PROGRAMME,
             Constante.ECRIRE,
-            Constante.TABLEAU
+            Constante.TABLEAU,
+            Constante.LIRE,
+            Constante.SI,
+            Constante.POUR,
+            Constante.REPETER,
+            Constante.ALORS,
+            Constante.SINON,
+            Constante.TANTQUE,
+            Constante.DANS,
+            Constante.TO
     );
 
     public static final List<String> OPERATEURS = List.of(
@@ -100,10 +109,22 @@ public class AnalyseurSyntaxique {
         return courante.equals(Constante.ENTIER) || courante.equals(Constante.TABLEAU);
     }
 
-    private Instruction analyserInstruction() throws ExceptionSyntaxique {
+    private Instruction analyserInstruction() throws ExceptionSyntaxique, ExceptionSemantique {
         Instruction instruction;
         //on test toutes les instructions que l'on peut avoir
-        if (this.courante.equals(Constante.ECRIRE)) {
+        if (this.courante.equals(Constante.LIRE)) {
+            instruction = analyserLire();
+        }
+        else if(this.courante.equals(Constante.SI)) {
+            instruction = analyserCondition();
+        }
+        else if(this.courante.equals(Constante.TANTQUE)) {
+            instruction = analyserTantque();
+        }
+        else if(this.courante.equals(Constante.POUR)) {
+            instruction = analyserPour();
+        }
+        else if (this.courante.equals(Constante.ECRIRE)) {
             instruction = analyserEcrire();
         } else if (this.courante.equals(Constante.ENTIER)) {
             //pas censé avoir de déclaration ici
@@ -114,9 +135,90 @@ public class AnalyseurSyntaxique {
             //throw une erreur, unité inconnue
             throw new UniteInconnu(this.courante);
         }
+        return instruction;
+    }
+
+    private Instruction analyserTantque() throws ExceptionSyntaxique, ExceptionSemantique {
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        //on test si on a bien '( EXPRESSION ) repeter BLOC'
+        analyseTerminal(Constante.PAREN_OPEN);
+        //on récupére l'expression
+        Expression condition = analyserExpression();
+        analyseTerminal(Constante.PAREN_CLOSE);
+        analyseTerminal(Constante.REPETER);
+        //on récupère le bloc
+        Bloc bloc = analyseBloc();
+        return new Tantque(condition, bloc);
+    }
+
+    private Instruction analyserPour() throws ExceptionSyntaxique, ExceptionSemantique {
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        //on test si on a bien 'IDF dans EXPRESSION .. EXPRESSION repeter BLOC'
+        //on récupère l'idf
+        if(!this.estIdf()) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "Identifiant", Constante.IDF_REGEX);
+        Idf idf = new Idf(this.courante);
+        //on ajoute l'idf dans la table des symboles
+        TDS.INSTANCE.ajouter(new Entree(idf.toString()), Constante.ENTIER, 4);
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        analyseTerminal(Constante.DANS);
+        //on récupère la première expression
+        Expression from = analyserExpression();
+        analyseTerminal(Constante.TO);
+        //on récupère la deuxième expression
+        Expression to = analyserExpression();
+        analyseTerminal(Constante.REPETER);
+        //on récupère le bloc
+        Bloc bloc = analyseBloc();
+        return new Pour(idf, from, to, bloc);
+    }
+
+    private Instruction analyserCondition() throws ExceptionSyntaxique, ExceptionSemantique {
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        //on test si on a bien '( EXPRESSION )'
+        analyseTerminal(Constante.PAREN_OPEN);
+        //on récupére l'expression
+        Expression condition = analyserExpression();
+        analyseTerminal(Constante.PAREN_CLOSE);
+        //on test qu'on a bien 'alors BLOC'
+        analyseTerminal(Constante.ALORS);
+        //on récupère le bloc
+        Bloc si = analyseBloc();
+        //on test si on un 'sinon BLOC'
+        Instruction instruction;
+        if(this.courante.equals(Constante.SINON)) {
+            //on passe à la prochaine unité lexicale
+            this.ancienne = this.courante;
+            this.courante = this.analyseurLexical.next();
+            //on récupère le bloc
+            Bloc sinon = analyseBloc();
+            instruction = new SiSinon(condition, si, sinon);
+        } else {
+            instruction = new Si(condition, si);
+        }
+        return instruction;
+    }
+
+    private Instruction analyserLire() throws UniteLexicaleAttendu {
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
+        //on test si on a bien un idf
+        if(!this.estIdf()) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "Identifiant", Constante.IDF_REGEX);
+        Idf idf = new Idf(this.courante);
+        //on passe à la prochaine unité lexicale
+        this.ancienne = this.courante;
+        this.courante = this.analyseurLexical.next();
         //on s'assure que l'expression se termine bien par le séparateur
         analyseTerminal(Constante.INSTR_SEPARATOR);
-        return instruction;
+        return new Lire(idf);
     }
 
     private Ecrire analyserEcrire() throws UniteLexicaleAttendu {
@@ -124,7 +226,10 @@ public class AnalyseurSyntaxique {
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();
         //on test si on a bien une expression
-        return new Ecrire(this.analyserExpression());
+        Expression expression = this.analyserExpression();
+        //on s'assure que l'expression se termine bien par le séparateur
+        analyseTerminal(Constante.INSTR_SEPARATOR);
+        return new Ecrire(expression);
     }
 
     private void analyserDeclaration() throws UniteLexicaleAttendu, ExceptionSemantique {
@@ -169,7 +274,10 @@ public class AnalyseurSyntaxique {
         //On vérifie que l'on a bien un token d'affectation
         this.analyseTerminal(Constante.AFFECTATION);
         //On vérifie qu'on a bien une expression
-        return new Affectation(acces, this.analyserExpression());
+        Expression expression = this.analyserExpression();
+        //on s'assure que l'expression se termine bien par le séparateur
+        analyseTerminal(Constante.INSTR_SEPARATOR);
+        return new Affectation(acces, expression);
     }
 
     private Expression analyserExpression() throws UniteLexicaleAttendu {
@@ -271,7 +379,7 @@ public class AnalyseurSyntaxique {
         }
     }
 
-    private boolean estIdf() throws UniteLexicaleAttendu {
+    private boolean estIdf() {
         //TODO: améliorer cette erreur
         //if(KEYWORDS.contains(this.courante) || OPERATEURS.contains(this.courante)) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "identifieur", Constante.IDF_REGEX);
         if(KEYWORDS.contains(this.courante)) return false;

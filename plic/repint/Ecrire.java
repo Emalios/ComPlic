@@ -3,6 +3,7 @@ package repint;
 import exceptions.ExceptionSemantique;
 import repint.expression.Expression;
 import repint.expression.Idf;
+import repint.expression.OperationBinaire;
 import repint.expression.operande.Nombre;
 
 public class Ecrire extends Instruction {
@@ -26,7 +27,7 @@ public class Ecrire extends Instruction {
     @Override
     String toMips() {
         StringBuilder builder = new StringBuilder();
-        if(this.expression instanceof Nombre) {
+        if(this.expression instanceof Nombre || this.expression instanceof OperationBinaire) {
             ajouterCommentaire(builder, "On récup la valeur de " + this.expression);
             ajouterLigne(builder, this.expression.toMips());
         } else {

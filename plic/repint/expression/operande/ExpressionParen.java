@@ -13,11 +13,11 @@ public class ExpressionParen extends Expression {
 
     @Override
     public void verifier() throws ExceptionSemantique {
-
+        this.expression.verifier();
     }
 
     @Override
     public String toMips() {
-        return null;
+        return this.expression.toMips();
     }
 }

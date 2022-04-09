@@ -18,6 +18,9 @@ public class MinExpressionParen extends Expression {
 
     @Override
     public String toMips() {
-        return null;
+        StringBuilder builder = new StringBuilder(this.expression.toMips());
+        builder.append("# On inverse\n");
+        builder.append("not $v0 $v0\n");
+        return builder.toString();
     }
 }
