@@ -1,4 +1,0 @@
-programme plic {
-    entier k ; tableau [ 5 ] t ;
-    t [ t [ t [ t [ t [ t [ 5 ] ] ] ] ] ] := t [ t [ t [ t [ t [ t [ 5 ] ] ] ] ] ] ;
-}

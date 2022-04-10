@@ -1,5 +1,6 @@
 package repint.expression;
 
+import analyse.Constante;
 import exceptions.ExceptionSemantique;
 import repint.TDS;
 import repint.expression.operande.Nombre;
@@ -22,6 +23,29 @@ public class OperationBinaire extends Expression {
     }
 
     @Override
+    public String getType() throws ExceptionSemantique {
+        switch (this.operateur) {
+            case "+":
+            case "-":
+            case "*": return Constante.ENTIER;
+            case "=":
+            case ">=":
+            case ">":
+            case "<=":
+            case "<":
+            case "#":
+            case "et":
+            case "ou": return Constante.BOOLEAN;
+        }
+        throw new ExceptionSemantique("Opérateur '" + this.operateur + "' inconnu.");
+    }
+
+    @Override
+    public String toString() {
+        return left + " " + operateur + " " + right;
+    }
+
+    @Override
     public String toMips() {
         StringBuilder builder = new StringBuilder();
         ajouterCommentaire(builder, "On calcule la première opérande dans $v0");
@@ -38,7 +62,7 @@ public class OperationBinaire extends Expression {
             case "+": ajouterLigne(builder, "add $v0, $v0, $v1"); break;
             case "-": ajouterLigne(builder, "sub $v0, $v0, $v1"); break;
             case "*": ajouterLigne(builder, "mul $v0, $v0, $v1"); break;
-            case "=": ajouterLigne(builder, "req $v0, $v0, $v1"); break;
+            case "=": ajouterLigne(builder, "seq $v0, $v0, $v1"); break;
             case ">=": ajouterLigne(builder, "sge $v0, $v0, $v1"); break;
             case ">": ajouterLigne(builder, "sgt $v0, $v0, $v1"); break;
             case "<=": ajouterLigne(builder, "sle $v0, $v0, $v1"); break;

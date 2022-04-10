@@ -1,4 +1,0 @@
-programme test {
-    entier k ;
-    tableau := 6 ;
-}

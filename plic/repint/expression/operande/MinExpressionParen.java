@@ -13,7 +13,12 @@ public class MinExpressionParen extends Expression {
 
     @Override
     public void verifier() throws ExceptionSemantique {
+        expression.verifier();
+    }
 
+    @Override
+    public String toString() {
+        return "- ( " + expression + " )";
     }
 
     @Override

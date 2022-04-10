@@ -34,13 +34,6 @@ public class Bloc {
 
     public String toMips() {
         StringBuilder builder = new StringBuilder();
-        //debut
-        builder.append(".data\n" +
-                "newLine : .asciiz \"\\n\"\n" +
-                "erreur_str: .asciiz \"Erreur: Débordement\"\n" +
-                "\n" +
-                ".text\n" +
-                "main : \n");
         //insertion des déclarations
         builder.append(TDS.INSTANCE.toMips()).append("\n");
         //insertion des instructions
@@ -48,19 +41,6 @@ public class Bloc {
         for (Instruction instruction : this.instructions) {
             builder.append(instruction.toMips()).append("\n");
         }
-        //end
-        builder.append("# fin\n");
-        builder.append("end: \n" +
-                "   li $v0,10\n" +
-                "   syscall ");
-        builder.append("#Erreur\n" +
-                "erreur:\n" +
-                "    #On affiche l'erreur\n" +
-                "    li $v0, 4\n" +
-                "    la $a0, erreur_str\n" +
-                "    syscall\n" +
-                "\n" +
-                "    b end");
         return builder.toString();
     }
 }

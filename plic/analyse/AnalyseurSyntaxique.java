@@ -161,8 +161,6 @@ public class AnalyseurSyntaxique {
         //on récupère l'idf
         if(!this.estIdf()) throw new UniteLexicaleAttendu(this.ancienne, this.courante, "Identifiant", Constante.IDF_REGEX);
         Idf idf = new Idf(this.courante);
-        //on ajoute l'idf dans la table des symboles
-        TDS.INSTANCE.ajouter(new Entree(idf.toString()), Constante.ENTIER, 4);
         //on passe à la prochaine unité lexicale
         this.ancienne = this.courante;
         this.courante = this.analyseurLexical.next();

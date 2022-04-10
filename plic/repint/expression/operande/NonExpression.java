@@ -13,7 +13,12 @@ public class NonExpression extends Expression {
 
     @Override
     public void verifier() throws ExceptionSemantique {
+        expression.verifier();
+    }
 
+    @Override
+    public String toString() {
+        return "non ( " + expression + " )";
     }
 
     @Override

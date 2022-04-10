@@ -19,6 +19,7 @@ public class Constante {
     public static final String DANS = "dans";
     public static final String SINON = "sinon";
     public static final String TO = "..";
+    public static final String BOOLEAN = "booleen";
     public static String EOF = "\n";
     public static String FIN_PROGRAMME = "";
     public static String PROGRAMME = "programme";

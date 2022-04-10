@@ -8,4 +8,8 @@ public class MauvaisType extends ExceptionSemantique {
         super("Mauvais type, l'expression '" + exp1 + "' (" + type1 + ") n'a pas le même type que '" + exp2 + "' (" + type2 + ")");
     }
 
+    public MauvaisType(Expression exp, String actualType, String expected) {
+        super("Mauvais type, l'expression '" + exp + "' (" + actualType + ") doit être de type '" + expected + "'");
+    }
+
 }

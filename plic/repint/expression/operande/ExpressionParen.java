@@ -17,6 +17,11 @@ public class ExpressionParen extends Expression {
     }
 
     @Override
+    public String toString() {
+        return "( " + expression + " )";
+    }
+
+    @Override
     public String toMips() {
         return this.expression.toMips();
     }

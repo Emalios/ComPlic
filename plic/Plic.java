@@ -12,7 +12,29 @@ public class Plic {
         AnalyseurSyntaxique analyseurSyntaxique = new AnalyseurSyntaxique(file);
         Bloc bloc = analyseurSyntaxique.analyse();
         bloc.verifier();
-        System.out.println(bloc.toMips());
+        StringBuilder builder = new StringBuilder();
+        //debut
+        builder.append(".data\n" +
+                "newLine : .asciiz \"\\n\"\n" +
+                "erreur_str: .asciiz \"Erreur: Débordement\"\n" +
+                "\n" +
+                ".text\n" +
+                "main : \n");
+        builder.append(bloc.toMips());
+        //end
+        builder.append("# fin\n");
+        builder.append("end: \n" +
+                "   li $v0,10\n" +
+                "   syscall ");
+        builder.append("#Erreur\n" +
+                "erreur:\n" +
+                "    #On affiche l'erreur\n" +
+                "    li $v0, 4\n" +
+                "    la $a0, erreur_str\n" +
+                "    syscall\n" +
+                "\n" +
+                "    b end");
+        System.out.println(builder);
     }
 
     public static void main(String[] args) throws ExceptionSyntaxique, ExceptionFichier {

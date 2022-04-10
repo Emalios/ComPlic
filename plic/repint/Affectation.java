@@ -66,24 +66,6 @@ public class Affectation extends Instruction {
         return builder.toString();
     }
 
-    private void depiler(StringBuilder builder) {
-        int deplacement = TDS.INSTANCE.getCptDepl();
-        ajouterLigne(builder, "add $sp, $sp, 4\n lw $v0, 0($sp)");
-    }
-
-    private void empiler(StringBuilder builder) {
-        int deplacement = TDS.INSTANCE.getCptDepl();
-        ajouterLigne(builder, "add $sp, $sp, -4\nsw $v0, " + deplacement + "($s7)");
-    }
-
-    private void ajouterLigne(StringBuilder builder, String line) {
-        builder.append(line).append("\n");
-    }
-
-    private void ajouterCommentaire(StringBuilder builder, String string) {
-        ajouterLigne(builder.append("# "), string);
-    }
-
     @Override
     public String toString() {
         return "Affectation(" + this.acces + "," + valeur + ")";
